@@ -9,32 +9,63 @@
 
         await new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve));
 
-        const content = document.getElementById("content");
-        const updatePage = async path => {
-                let page;
+        const deepFreeze = object => {
+                if (object === undefined) {
+                        return object;
+                }
 
-                switch (path) {
-                        case "/home": {
-                                page = "./Home.html";
-                                break;
-                        }
+                Object.freeze(object);
 
-                        case "/grid": {
-                                page = "./Grid.html";
-                                break;
-                        }
+                for (const property of Object.getOwnPropertyNames(object)) {
+                        const value = object[property];
 
-                        default: {
-                                content.innerHTML = "<h1>404 - Page not found</h1>";
+                        if (value === undefined) {
                                 return;
+                        }
+
+                        const type = typeof value;
+                        if (type === "object" || type === "function") {
+                                if (!Object.isFrozen(value)) {
+                                        deepFreeze(value);
+                                }
                         }
                 }
 
+                return object;
+        };
+
+        const routes = deepFreeze({
+                "/home": {
+                        html: "./Home.html",
+                        scripts: []
+                },
+                "/grid": {
+                        html: "./Grid.html",
+                        scripts: []
+                }
+        });
+
+        const content = document.getElementById("content");
+        const updatePage = async path => {
+                const route = routes[path];
+
+                if (route === undefined) {
+                        content.innerHTML = "<h1>404 - Page not found</h1>";
+                        return;
+                }
+
                 try {
-                        const response = await fetch(page);
+                        const response = await fetch(route.page);
                         content.innerHTML = await response.text();
-                } catch {
+
+                        for (const script of route.scripts) {
+                                const scriptElement = document.createElement("script");
+                                scriptElement.src = script;
+                                document.body.appendChild(scriptElement);
+                        }
+                } catch (error) {
                         content.innerHTML = "<h1>Error loading page</h1>";
+                        console.error("Navigation error:", error);
                 }
         }
 
