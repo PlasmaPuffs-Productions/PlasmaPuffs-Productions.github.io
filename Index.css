@@ -8,7 +8,6 @@
         color: var(--foreground-color);
         font-family: "Inter", sans-serif;
         box-sizing: border-box;
-        margin: 0;
 }
 
 .emoji {
@@ -67,6 +66,7 @@ html, body {
         text-decoration: none;
         transition: border-bottom 100ms ease-out;
         border-bottom: 0.15rem solid transparent;
+        font-size: larger;
         padding: 0.25rem;
         gap: 0.5rem;
 }
@@ -80,7 +80,6 @@ html, body {
         white-space: nowrap;
         display: inline-block;
         text-overflow: ellipsis;
-        font-weight: 500;
         overflow: hidden;
 }
 

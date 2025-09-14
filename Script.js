@@ -9,18 +9,32 @@
 
         await new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve));
 
-        function presentContent(path) {
-                const content = document.getElementById("content");
+        const content = document.getElementById("content");
+        const updatePage = async path => {
+                let page;
+
                 switch (path) {
-                        case "/home":
-                                content.textContent = "Welcome to the Home page";
+                        case "/home": {
+                                page = "Home.html";
                                 break;
-                        case "/about":
-                                content.textContent = "This is the About page";
+                        }
+
+                        case "/grid": {
+                                page = "Grid.html";
                                 break;
-                        default:
-                                content.textContent = "Page not found"
-                                break;
+                        }
+
+                        default: {
+                                content.innerHTML = "<h1>404 - Page not found</h1>";
+                                return;
+                        }
+                }
+
+                try {
+                        const response = await fetch(page);
+                        content.innerHTML = await response.text();
+                } catch {
+                        content.innerHTML = "<h1>Error loading page</h1>";
                 }
         }
 
@@ -30,17 +44,17 @@
 
                         const path = link.getAttribute("href");
                         history.pushState({}, "", path);
-                        presentContent(path);
+                        updatePage(path);
                 });
         });
 
         window.addEventListener("popstate", () => {
-                presentContent(window.location.pathname);
+                updatePage(window.location.pathname);
         });
 
         if (window.location.pathname === "/") {
                 history.replaceState({}, "", "/home");
         }
 
-        presentContent(window.location.pathname);
+        updatePage(window.location.pathname);
 })();
