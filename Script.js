@@ -36,11 +36,11 @@
 
         const routes = deepFreeze({
                 "/home": {
-                        html: "./Home.html",
+                        html: "Home.html",
                         scripts: []
                 },
                 "/grid": {
-                        html: "./Grid.html",
+                        html: "Grid.html",
                         scripts: []
                 }
         });
@@ -54,14 +54,9 @@
                 }
 
                 try {
-                        content.innerHTML = "<p>Loading…</p>";
+                        content.innerHTML = "<p>Loading...</p>";
 
-                        // Build an absolute URL for the partial relative to the current document.
-                        // This ensures it resolves to the repo base (works on project pages).
-                        const url = new URL(route.html, window.location.href).href;
-                        console.log("Fetching page:", url);
-
-                        const response = await fetch(url);
+                        const response = await fetch(route.html);
 
                         if (!response.ok) {
                                 console.error("Failed to load page:", url, response.status, response.statusText);
