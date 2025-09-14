@@ -15,12 +15,12 @@
 
                 switch (path) {
                         case "/home": {
-                                page = "Home.html";
+                                page = "./Home.html";
                                 break;
                         }
 
                         case "/grid": {
-                                page = "Grid.html";
+                                page = "./Grid.html";
                                 break;
                         }
 
