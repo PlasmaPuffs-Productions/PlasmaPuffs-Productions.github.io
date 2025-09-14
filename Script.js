@@ -48,26 +48,43 @@
         const content = document.getElementById("content");
         const updatePage = async path => {
                 const route = routes[path];
-
-                if (route === undefined) {
+                if (!route) {
                         content.innerHTML = "<h1>404 - Page not found</h1>";
                         return;
                 }
 
                 try {
-                        const response = await fetch(route.page);
-                        content.innerHTML = await response.text();
+                        content.innerHTML = "<p>Loading…</p>";
 
-                        for (const script of route.scripts) {
-                                const scriptElement = document.createElement("script");
-                                scriptElement.src = script;
-                                document.body.appendChild(scriptElement);
+                        // Build an absolute URL for the partial relative to the current document.
+                        // This ensures it resolves to the repo base (works on project pages).
+                        const url = new URL(route.html, window.location.href).href;
+                        console.log("Fetching page:", url);
+
+                        const response = await fetch(url);
+
+                        if (!response.ok) {
+                                console.error("Failed to load page:", url, response.status, response.statusText);
+                                content.innerHTML = "<h1>404 - Page not found</h1>";
+                                return;
+                        }
+
+                        const html = await response.text();
+                        content.innerHTML = html;
+
+                        for (const script of route.scripts || []) {
+                                if (!document.querySelector(`script[src="${script}"]`)) {
+                                        const scriptElement = document.createElement("script");
+                                        scriptElement.src = script;
+                                        scriptElement.defer = true;
+                                        document.body.appendChild(scriptElement);
+                                }
                         }
                 } catch (error) {
-                        content.innerHTML = "<h1>Error loading page</h1>";
                         console.error("Navigation error:", error);
+                        content.innerHTML = "<h1>Error loading page</h1>";
                 }
-        }
+        };
 
         document.querySelectorAll("a.navigation-link").forEach(link => {
                 link.addEventListener("click", event => {
