@@ -1,5 +1,1 @@
-<!DOCTYPE html>
-<script>
-        const path = location.pathname + location.search + location.hash;
-        window.location.replace("/Index.html?redirect=" + encodeURIComponent(path));
-</script>
+<script>window.location.replace(`/Index.html?redirect=${encodeURIComponent(location.pathname + location.search + location.hash)}`);</script>
