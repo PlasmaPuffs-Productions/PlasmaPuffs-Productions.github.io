@@ -34,10 +34,10 @@
                 "/home": {
                         html: "Home.html",
                 },
-                "/grid": {
-                        html: "Grid.html",
+                "/sokobee": {
+                        html: "Sokobee.html",
                         scripts: [
-                                "Grid.js"
+                                "Sokobee.js"
                         ]
                 }
         });
