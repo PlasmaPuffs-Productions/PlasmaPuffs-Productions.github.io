@@ -1,18 +1,5 @@
 <!DOCTYPE html>
-<html>
-        <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="stylesheet" type="text/css" href="Styles.css">
-                <link rel="icon" type="image/png" href="PlasmaPuffs.png">
-                <script src="Redirect.js" defer></script>
-                <title>Redirecting...</title>
-        </head>
-        <body>
-                <div class="wrapper">
-                        <main>
-                                <h1>Redirecting...</h1>
-                        </main>
-                </div>
-        </body>
-</html>
+<script>
+        const path = location.pathname + location.search + location.hash;
+        window.location.replace("/Index.html?redirect=" + encodeURIComponent(path));
+</script>
