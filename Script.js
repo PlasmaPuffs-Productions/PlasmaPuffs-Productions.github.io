@@ -33,44 +33,48 @@
         const routes = deepFreeze({
                 "/home": {
                         html: "Home.html",
-                        scripts: []
                 },
                 "/grid": {
                         html: "Grid.html",
-                        scripts: []
+                        scripts: [
+                                "Grid.js"
+                        ]
                 }
         });
 
         const content = document.getElementById("content");
+        const fallbackPage = () => {
+                // This could be an error while loading the page, or the page being not found (404)
+                // Maybe add more information for the type of error and/or use <template>s in <main>
+                content.innerHTML = "<h1>Error loading page</h1>";
+        };
+
         const updatePage = async path => {
                 const route = routes[path];
-                if (!route) {
-                        content.innerHTML = "<h1>404 - Page not found</h1>";
+                if (route === undefined) {
+                        fallbackPage();
                         return;
                 }
 
                 try {
                         const response = await fetch(route.html);
-
                         if (!response.ok) {
-                                console.error("Failed to load page:", url, response.status, response.statusText);
-                                content.innerHTML = "<h1>404 - Page not found</h1>";
+                                console.error(`Failed to load page ${url}: ${response.status} ${response.statusText}`);
+                                fallbackPage();
                                 return;
                         }
 
                         content.innerHTML = await response.text();
 
-                        for (const script of route.scripts || []) {
-                                if (!document.querySelector(`script[src="${script}"]`)) {
-                                        const scriptElement = document.createElement("script");
-                                        scriptElement.src = script;
-                                        scriptElement.defer = true;
-                                        document.body.appendChild(scriptElement);
-                                }
+                        for (const script of route.scripts ?? []) {
+                                const element = document.createElement("script");
+                                element.src = script;
+                                content.appendChild(element);
                         }
                 } catch (error) {
-                        console.error("Navigation error:", error);
-                        content.innerHTML = "<h1>Error loading page</h1>";
+                        console.error(`Navigation error: ${error}`);
+                        fallbackPage();
+                        return;
                 }
         };
 
