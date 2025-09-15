@@ -1,13 +1,9 @@
-(async () => {
-        (() => {
-                const searchParameters = new URLSearchParams(window.location.search);
-                if (searchParameters.has("redirect")) {
-                        const redirectPath = searchParameters.get("redirect");
-                        history.replaceState({}, "", redirectPath);
-                }
-        })();
-
-        await new Promise(resolve => document.addEventListener("DOMContentLoaded", resolve));
+(() => {
+        const searchParameters = new URLSearchParams(window.location.search);
+        if (searchParameters.has("redirect")) {
+                const redirectPath = searchParameters.get("redirect");
+                history.replaceState({}, "", redirectPath);
+        }
 
         const deepFreeze = object => {
                 if (object === undefined) {
@@ -54,8 +50,6 @@
                 }
 
                 try {
-                        content.innerHTML = "<p>Loading...</p>";
-
                         const response = await fetch(route.html);
 
                         if (!response.ok) {
@@ -64,8 +58,7 @@
                                 return;
                         }
 
-                        const html = await response.text();
-                        content.innerHTML = html;
+                        content.innerHTML = await response.text();
 
                         for (const script of route.scripts || []) {
                                 if (!document.querySelector(`script[src="${script}"]`)) {

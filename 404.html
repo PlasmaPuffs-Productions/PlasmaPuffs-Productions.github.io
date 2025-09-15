@@ -3,18 +3,16 @@
         <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="stylesheet" type="text/css" href="Styles.css">
                 <link rel="icon" type="image/png" href="PlasmaPuffs.png">
+                <script src="Redirect.js" defer></script>
                 <title>Redirecting...</title>
-                <script>
-                        (() => {
-                                const path = window.location.pathname + window.location.search + window.location.hash;
-                                if (!window.location.search.includes("redirect=")) {
-                                        window.location.replace("/Index.html?redirect=" + encodeURIComponent(path));
-                                }
-                        })();
-                </script>
         </head>
         <body>
-                Redirecting...
+                <div class="wrapper">
+                        <main>
+                                <h1>Redirecting...</h1>
+                        </main>
+                </div>
         </body>
 </html>
